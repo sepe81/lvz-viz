@@ -1,0 +1,22 @@
+FROM openjdk:8u181-jre-stretch
+
+LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
+
+ENV USER lvz-viz
+
+RUN groupadd --system --gid 1000 $USER \
+  && useradd --system --gid $USER --uid 1000 --shell /bin/bash --create-home $USER
+
+USER $USER
+WORKDIR /home/$USER
+
+COPY --chown=$USER dewac_175m_600.crf.ser.gz .
+COPY --chown=$USER build/libs/lvz-viz-2.0.0-SNAPSHOT.jar ./app.jar
+
+EXPOSE 8080
+
+ENV JAVA_OPTS="-XshowSettings:vm -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1"
+
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["java"]

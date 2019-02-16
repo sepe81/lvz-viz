@@ -1,0 +1,20 @@
+FROM openjdk:11-jre
+
+LABEL maintainer="Sebastian Peters <Sebastian.Peters@gmail.com>"
+
+ENV USER lvz-viz
+
+# https://busybox.net/downloads/BusyBox.html#adduser
+# https://debiananwenderhandbuch.de/benutzerverwaltung.html
+RUN addgroup --gid 1000 --system $USER \
+  && adduser --disabled-password --ingroup $USER --system --uid 1000 $USER
+
+USER $USER
+WORKDIR /home/$USER
+
+COPY --chown=$USER dewac_175m_600.crf.ser.gz .
+COPY --chown=$USER build/libs/lvz-viz-2.0.0-SNAPSHOT.jar ./app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-XX:MaxRAMPercentage=95","-XshowSettings:vm","-Djava.security.egd=file:/dev/./urandom","-jar","./app.jar"]
