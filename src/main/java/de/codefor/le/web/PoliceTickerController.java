@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -12,6 +14,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +53,20 @@ public class PoliceTickerController {
     private final ElasticsearchTemplate elasticsearchTemplate;
 
     private final Optional<NER> ner;
+
+    @Value("${git.commit.id}")
+    private String commitId;
+
+    @Value("${git.build.version}")
+    private String buildVersion;
+
+    @RequestMapping("/gitProperties")
+    public Map<String, String> getCommitId() {
+        final Map<String, String> result = new HashMap<>();
+        result.put("Build version", buildVersion);
+        result.put("Commit id", commitId);
+        return result;
+    }
 
     @GetMapping(value = "/getx")
     public Page<PoliceTicker> getx(@PageableDefault final Pageable pageable) {
