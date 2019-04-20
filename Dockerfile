@@ -23,6 +23,7 @@ COPY --chown=${USER} build.gradle .
 COPY --chown=${USER} src ./src
 RUN rm -f src/main/resources/public/js/*.js
 COPY --chown=${USER} --from=build-js /home/node/build/resources/main/public/js/app.min.js ./src/main/resources/public/js/
+COPY --chown=${USER} .git ./.git
 
 RUN gradle --info assemble
 
