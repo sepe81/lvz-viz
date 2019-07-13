@@ -1,6 +1,7 @@
 plugins {
   id 'com.adarshr.test-logger' version '2.0.0'
   id 'com.avast.gradle.docker-compose' version '0.9.5'
+  id 'com.google.cloud.tools.jib' version '1.3.0'
   id 'com.gorylenko.gradle-git-properties' version '2.2.0'
   id 'eclipse-wtp'
   id 'idea'
@@ -96,6 +97,15 @@ test {
 
 testlogger {
   showStandardStreams false
+}
+
+jib {
+  from {
+    image = 'adoptopenjdk/openjdk8:alpine-jre'
+  }
+  to {
+    image = "sepe81/lvz-viz:${version}-jib"
+  }
 }
 
 // see http://www.rehpoehler.de/gradle/Gradle-Eclipse-WTP-Beispiel.html
