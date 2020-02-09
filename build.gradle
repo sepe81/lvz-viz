@@ -11,7 +11,7 @@ plugins {
   id 'java'
   id 'org.ec4j.editorconfig' version '0.0.3'
   id 'org.sonarqube' version '4.4.1.3373'
-  id 'org.springframework.boot' version '2.2.13.RELEASE'
+  id 'org.springframework.boot' version '2.4.5'
 }
 
 group = 'de.codefor.le'
@@ -26,7 +26,6 @@ java {
 }
 
 springBoot {
-  mainClassName = 'de.codefor.le.LvzViz'
   buildInfo()
 }
 
@@ -41,6 +40,11 @@ configurations.implementation {
 repositories {
   mavenCentral()
 }
+
+configurations {
+  testImplementation.exclude group: "org.hamcrest"
+}
+
 dependencies {
   def seleniumVersion = '4.14.1'
   implementation "io.github.bonigarcia:webdrivermanager:5.5.3",
@@ -64,9 +68,7 @@ dependencies {
                  "org.springframework.boot:spring-boot-starter-data-elasticsearch",
                  "org.springframework.boot:spring-boot-starter-actuator"
 
-  testImplementation("org.springframework.boot:spring-boot-starter-test") {
-    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-  }
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 dockerCompose {
