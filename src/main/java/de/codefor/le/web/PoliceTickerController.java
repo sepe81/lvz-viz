@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -13,10 +14,12 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -70,10 +73,11 @@ public class PoliceTickerController {
             @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED) final Pageable pageable) {
         logger.debug("search query: {}", query);
         return query.isEmpty() ? getx(pageable)
-                : elasticsearchTemplate.queryForPage(
-                        new NativeSearchQueryBuilder().withPageable(pageable)
+                : new PageImpl<>(elasticsearchTemplate
+                        .search(new NativeSearchQueryBuilder().withPageable(pageable)
                                 .withQuery(createFulltextSearchQueryBuilder(splitIntoTerms(query))).build(),
-                        PoliceTicker.class);
+                                PoliceTicker.class, elasticsearchTemplate.getIndexCoordinatesFor(PoliceTicker.class))
+                        .get().map(SearchHit::getContent).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/searchbetween")
@@ -82,13 +86,12 @@ public class PoliceTickerController {
             @RequestParam @DateTimeFormat(iso = ISO.DATE_TIME) final LocalDateTime to,
             @PageableDefault(direction = Direction.DESC, sort = DATE_PUBLISHED, size = Integer.MAX_VALUE) final Pageable pageable) {
         logger.debug("query: {} from: {}, to: {}", query, from, to);
-        final var results = elasticsearchTemplate
-                .queryForPage(
-                        new NativeSearchQueryBuilder().withPageable(pageable)
-                                .withQuery(createFulltextSearchQueryBetween(query, from, to)).build(),
-                        PoliceTicker.class);
-        logger.debug("results {}", results.getSize());
-        return results;
+        final var results = elasticsearchTemplate.search(
+                new NativeSearchQueryBuilder().withPageable(pageable)
+                        .withQuery(createFulltextSearchQueryBetween(query, from, to)).build(),
+                PoliceTicker.class, elasticsearchTemplate.getIndexCoordinatesFor(PoliceTicker.class));
+        logger.debug("results {}", results.getTotalHits());
+        return new PageImpl<>(results.get().map(SearchHit::getContent).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/minmaxdate")
