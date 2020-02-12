@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "lvz-viz": {
@@ -24,9 +24,17 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/iThing-min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/js/analytics.js",
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/bootstrap/dist/js/bootstrap.js",
+              "node_modules/leaflet/dist/leaflet.js",
+              "src/js/jQDateRangeSlider-min.js",
+              "src/js/leaflet-heat.js"
+            ]
           },
           "configurations": {
             "production": {
