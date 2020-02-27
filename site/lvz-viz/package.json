@@ -21,6 +21,7 @@
     "@angular/router": "~9.0.3",
     "bootstrap": "^3.3.7",
     "jquery": "^3.3.1",
+    "jquery-ui-dist": "^1.12.1",
     "leaflet": "^0.7.7",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
