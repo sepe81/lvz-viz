@@ -5,12 +5,16 @@ import { AppComponent } from './app.component';
 import { ArticlesComponent } from './articles/articles.component';
 import { MapComponent } from './map/map.component';
 import { HttpClientModule } from '@angular/common/http';
+import { HeatmapComponent } from './heatmap/heatmap.component';
+import { SliderComponent } from './slider/slider.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ArticlesComponent,
-    MapComponent
+    MapComponent,
+    HeatmapComponent,
+    SliderComponent
   ],
   imports: [
     BrowserModule,
