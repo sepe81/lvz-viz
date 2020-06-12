@@ -37,13 +37,13 @@ class ReplacementTest {
         pt.setDatePublished(Date.from(LocalDateTime.of(2014, 8, 10, 9, 6).atZone(DEFAULT_ZONE).toInstant()));
         pt.setArticle("This is the long article");
         pt.setSnippet("snippet at its best");
-        assertThat(policeTickerRepository.index(pt)).isNotNull();
+        assertThat(policeTickerRepository.save(pt)).isNotNull();
 
         pt = new PoliceTicker();
         pt.setDatePublished(Date.from(LocalDateTime.of(2014, 8, 7, 9, 6).atZone(DEFAULT_ZONE).toInstant()));
         pt.setArticle("This is the long article");
         pt.setSnippet("snippet at its best");
-        assertThat(policeTickerRepository.index(pt)).isNotNull();
+        assertThat(policeTickerRepository.save(pt)).isNotNull();
     }
 
     @Test
