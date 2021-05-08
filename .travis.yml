@@ -19,3 +19,5 @@ after_success:
   - if [ "$TRAVIS_JDK_VERSION" = "openjdk11" ]; then
       bash <(curl -s https://codecov.io/bash);
     fi;
+after_failure:
+  - docker-compose logs elasticsearch
