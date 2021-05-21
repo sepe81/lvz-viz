@@ -2,10 +2,9 @@ package de.codefor.le.crawler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -18,13 +17,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import de.codefor.le.LvzViz;
 import de.codefor.le.model.PoliceTicker;
 
 public class LvzPoliceTickerDetailViewCrawlerTest {
 
     private static final String BASE_URL = LvzPoliceTickerCrawler.LVZ_POLICE_TICKER_BASE_URL;
 
-    private static final Date PUBLISHING_DATE = getDate(LocalDateTime.of(2015, 10, 11, 15, 13));
+    private static final Instant PUBLISHING_DATE = toInstant(LocalDateTime.of(2015, 10, 11, 15, 13));
 
     private static final String ARTICLE = "Fast ein halbes Jahr nach einem tödlichen Kranunfall in der Leipziger Innenstadt "
             + "ist die Verantwortung noch immer unklar. Ein technisches Gutachten liege inzwischen vor, "
@@ -36,8 +36,8 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
 
     private final LvzPoliceTickerDetailViewCrawler crawler = new LvzPoliceTickerDetailViewCrawler();
 
-    private static Date getDate(LocalDateTime localDate) {
-        return Date.from(localDate.atZone(ZoneId.of("Europe/Berlin")).toInstant());
+    private static Instant toInstant(LocalDateTime localDate) {
+        return localDate.atZone(LvzViz.EUROPE_BERLIN).toInstant();
     }
 
     @Test
@@ -102,7 +102,7 @@ public class LvzPoliceTickerDetailViewCrawlerTest {
             @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published)
             throws InterruptedException, ExecutionException {
         assertThat(crawler.execute(BASE_URL + path).get()).isNotNull().satisfies(ticker -> {
-            assertThat(ticker.getDatePublished()).isEqualTo(getDate(published));
+            assertThat(ticker.getDatePublished()).isEqualTo(toInstant(published));
             assertThat(ticker.getCopyright()).isEqualTo(COPYRIGHT);
         });
     }
