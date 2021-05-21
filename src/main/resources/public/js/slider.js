@@ -27,9 +27,10 @@
           isArray: true
         }, function(last7days) {
           map._onResize();
+          console.debug('minmaxdate: ' + minmaxdate + ", last7days: " + last7days);
           createSlider(minmaxdate, last7days);
-          var min = new Date(last7days[0].year, last7days[0].monthOfYear - 1, last7days[0].dayOfMonth);
-          var max = new Date(last7days[1].year, last7days[1].monthOfYear - 1, last7days[1].dayOfMonth);
+          var min = new Date(last7days[0]);
+          var max = new Date(last7days[1]);
           getResources(min.toISOString(), max.toISOString());
         });
       });
@@ -39,17 +40,18 @@
       $('#slider').dateRangeSlider({
         arrows: false,
         bounds: {
-          min: new Date(minmaxdate[0].year, minmaxdate[0].monthOfYear - 1, minmaxdate[0].dayOfMonth),
-          max: new Date(minmaxdate[1].year, minmaxdate[1].monthOfYear - 1, minmaxdate[1].dayOfMonth)
+          min: new Date(minmaxdate[0]),
+          max: new Date(minmaxdate[1])
         },
         step: {
           days: 1
         },
         defaultValues: {
-          min: new Date(defaultDate[0].year, defaultDate[0].monthOfYear - 1, defaultDate[0].dayOfMonth),
-          max: new Date(defaultDate[1].year, defaultDate[1].monthOfYear - 1, defaultDate[1].dayOfMonth)
+          min: new Date(defaultDate[0]),
+          max: new Date(defaultDate[1])
         }
       }).bind('valuesChanged', function(e, data) {
+        console.debug('valuesChanged min: ' + data.values.min + ", max: " +  + data.values.max);
         getResources(data.values.min.toISOString(), data.values.max.toISOString());
         map._onResize();
       });

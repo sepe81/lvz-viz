@@ -1,6 +1,6 @@
 package de.codefor.le.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.annotation.Id;
@@ -34,7 +34,7 @@ public class PoliceTicker {
     private String copyright;
 
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
-    private Date datePublished;
+    private Instant datePublished;
 
     private GeoPoint coords;
 

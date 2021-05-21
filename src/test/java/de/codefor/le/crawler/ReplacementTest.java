@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,13 +33,13 @@ class ReplacementTest {
     @BeforeEach
     public void init() {
         var pt = new PoliceTicker();
-        pt.setDatePublished(Date.from(LocalDateTime.of(2014, 8, 10, 9, 6).atZone(DEFAULT_ZONE).toInstant()));
+        pt.setDatePublished(LocalDateTime.of(2014, 8, 10, 9, 6).atZone(DEFAULT_ZONE).toInstant());
         pt.setArticle("This is the long article");
         pt.setSnippet("snippet at its best");
         assertThat(policeTickerRepository.save(pt)).isNotNull();
 
         pt = new PoliceTicker();
-        pt.setDatePublished(Date.from(LocalDateTime.of(2014, 8, 7, 9, 6).atZone(DEFAULT_ZONE).toInstant()));
+        pt.setDatePublished(LocalDateTime.of(2014, 8, 7, 9, 6).atZone(DEFAULT_ZONE).toInstant());
         pt.setArticle("This is the long article");
         pt.setSnippet("snippet at its best");
         assertThat(policeTickerRepository.save(pt)).isNotNull();

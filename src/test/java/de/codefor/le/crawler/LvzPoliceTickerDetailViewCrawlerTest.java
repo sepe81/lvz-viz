@@ -2,10 +2,9 @@ package de.codefor.le.crawler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -18,13 +17,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import de.codefor.le.LvzViz;
 import de.codefor.le.model.PoliceTicker;
 
 class LvzPoliceTickerDetailViewCrawlerTest {
 
     private static final String BASE_URL = LvzPoliceTickerCrawler.LVZ_BASE_URL + "/lokales/leipzig";
 
-    private static final Date PUBLISHING_DATE = getDate(LocalDateTime.of(2022, 6, 12, 11, 13, 7));
+    private static final Instant PUBLISHING_DATE = toInstant(LocalDateTime.of(2022, 6, 12, 11, 13, 7));
 
     private static final String ARTICLE = "Leipzig. Eine historische Flüssigbrandbombe hat am Samstag im Leipziger Südwesten einen Polizeieinsatz ausgelöst."
             + " Ein Passant habe den metallischen Gegenstand gegen 16 Uhr in der Nähe der Brückenstraße und des Lauerschen Wegs entdeckt,"
@@ -33,8 +33,8 @@ class LvzPoliceTickerDetailViewCrawlerTest {
 
     private final LvzPoliceTickerDetailViewCrawler crawler = new LvzPoliceTickerDetailViewCrawler();
 
-    private static Date getDate(LocalDateTime localDate) {
-        return Date.from(localDate.atZone(ZoneId.of("Europe/Berlin")).toInstant());
+    private static Instant toInstant(LocalDateTime localDate) {
+        return localDate.atZone(LvzViz.EUROPE_BERLIN).toInstant();
     }
 
     @Test
@@ -110,7 +110,7 @@ class LvzPoliceTickerDetailViewCrawlerTest {
             @JavaTimeConversionPattern("dd.MM.yyyy HH:mm:ss") final LocalDateTime published, final String copyright)
             throws InterruptedException, ExecutionException {
         assertThat(crawler.execute(BASE_URL + path).get()).isNotNull().satisfies(ticker -> {
-            assertThat(ticker.getDatePublished()).isEqualTo(getDate(published));
+            assertThat(ticker.getDatePublished()).isEqualTo(published.atZone(LvzViz.EUROPE_BERLIN).toInstant());
             assertThat(ticker.getCopyright()).isEqualTo(copyright);
         });
     }

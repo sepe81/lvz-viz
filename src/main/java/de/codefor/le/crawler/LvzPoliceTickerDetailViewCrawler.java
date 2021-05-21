@@ -1,12 +1,13 @@
 package de.codefor.le.crawler;
 
+import static de.codefor.le.LvzViz.EUROPE_BERLIN;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -148,22 +149,22 @@ public class LvzPoliceTickerDetailViewCrawler {
     }
 
     @VisibleForTesting
-    static Date extractDate(final String date) {
+    static Instant extractDate(final String date) {
         logger.debug("extractDate from {}", date);
-        Date result = null;
+        Instant result = null;
         if (!Strings.isNullOrEmpty(date)) {
-            ZonedDateTime zonedDateTime;
             try {
                 String normalizedDate = date;
                 if (date.length() == 20 && date.endsWith("Z")) {
                     normalizedDate = date.substring(0, date.length() - 1);
                 }
+                ZonedDateTime zonedDateTime;
                 if (normalizedDate.length() == 19) {
-                    zonedDateTime = LocalDateTime.parse(normalizedDate).atZone(ZoneId.of("Europe/Berlin"));
+                    zonedDateTime = LocalDateTime.parse(normalizedDate).atZone(EUROPE_BERLIN);
                 } else {
                     zonedDateTime = ZonedDateTime.parse(normalizedDate);
                 }
-                result = Date.from(zonedDateTime.toInstant());
+                result = zonedDateTime.toInstant();
             } catch (final DateTimeParseException e) {
                 logger.warn(e.toString(), e);
             }
