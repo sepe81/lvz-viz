@@ -102,12 +102,10 @@ public class PoliceTickerController {
     public LocalDateTime[] minMaxDate() {
         final var minDate = policeTickerRepository.findAll(PageRequest.of(0, 1, Direction.ASC, DATE_PUBLISHED));
         final var maxDate = policeTickerRepository.findAll(PageRequest.of(0, 1, Direction.DESC, DATE_PUBLISHED));
-        final var minDatePublished = minDate.getContent().size() > 0
-                ? LocalDateTime.ofInstant(minDate.getContent().get(0).getDatePublished(), EUROPE_BERLIN)
-                : LocalDateTime.now();
-        final var maxDatePublished = maxDate.getContent().size() > 0
-                ? LocalDateTime.ofInstant(maxDate.getContent().get(0).getDatePublished(), EUROPE_BERLIN)
-                : LocalDateTime.now();
+        final var minDatePublished = minDate.getContent().isEmpty() ? LocalDateTime.now() :
+                LocalDateTime.ofInstant(minDate.getContent().get(0).getDatePublished(), EUROPE_BERLIN);
+        final var maxDatePublished = maxDate.getContent().isEmpty() ? LocalDateTime.now() :
+                LocalDateTime.ofInstant(maxDate.getContent().get(0).getDatePublished(), EUROPE_BERLIN);
         logger.debug("min {}, max {}", minDatePublished, maxDatePublished);
         return new LocalDateTime[] { minDatePublished, maxDatePublished };
     }
