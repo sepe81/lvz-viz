@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -78,7 +77,7 @@ public class PoliceTickerController {
                         .build(),
                     PoliceTicker.class,
                     elasticsearchTemplate.getIndexCoordinatesFor(PoliceTicker.class))
-            .get().map(SearchHit::getContent).collect(Collectors.toList()));
+            .get().map(SearchHit::getContent).toList());
     }
 
     @GetMapping(value = "/searchbetween")
@@ -95,7 +94,7 @@ public class PoliceTickerController {
             PoliceTicker.class,
             elasticsearchTemplate.getIndexCoordinatesFor(PoliceTicker.class));
         logger.debug("results {}", results.getTotalHits());
-        return new PageImpl<>(results.get().map(SearchHit::getContent).collect(Collectors.toList()));
+        return new PageImpl<>(results.get().map(SearchHit::getContent).toList());
     }
 
     @GetMapping(value = "/minmaxdate")
